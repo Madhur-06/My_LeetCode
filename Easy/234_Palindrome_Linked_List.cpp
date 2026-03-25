@@ -5,14 +5,14 @@ Difficulty: Easy
 
 
 Approach:
-1. Traverse the linked list and store values in a vector.
-2. Use two pointers (left and right) to compare elements from both ends.
-3. Move pointers inward while values are equal.
-4. If all corresponding elements match, the list is a palindrome.
+1. Use slow and fast pointers to find the middle of the list.
+2. Reverse the second half of the linked list.
+3. Compare the first half and reversed second half node by node.
+4. If all values match, the list is a palindrome.
 
 
 Time Complexity: O(n)
-Space Complexity: O(n)
+Space Complexity: O(1)
 */
 
 /**
@@ -28,23 +28,52 @@ Space Complexity: O(n)
 
 class Solution {
 public:
+
+    // Helper function to reverse linked list
+    ListNode* reverse(ListNode* head) {
+        ListNode* prev = NULL;
+
+        // Step 2: Reverse the list
+        while (head) {
+            ListNode* next = head->next;
+            head->next = prev;
+            prev = head;
+            head = next;
+        }
+        return prev;
+    }
+
     bool isPalindrome(ListNode* head) {
 
-        // Step 1: Store list values in vector
-        vector<int> listVals;
-        while (head) {
-            listVals.push_back(head->val);
-            head = head->next;
-        }
-        
-        // Step 2 & 3: Compare from both ends
-        int left = 0, right = listVals.size() - 1;
-        while (left < right && listVals[left] == listVals[right]) {
-            left++;
-            right--;
+        // Step 1: Handle edge cases
+        if(!head || !head->next)
+            return true;
+
+        // Step 1: Find middle using slow & fast
+        ListNode* slow = head;
+        ListNode* fast = head;
+
+        while(fast && fast->next){
+            slow = slow->next;
+            fast = fast->next->next;
+        } 
+
+        // Step 2: Reverse second half
+        slow = reverse(slow);
+
+        // Step 3: Compare both halves
+        ListNode* first = head;
+        ListNode* second = slow;
+
+        while(second){
+            if(first->val != second->val){
+                return false;
+            }
+            first = first->next;
+            second = second->next;
         }
 
-        // Step 4: Check if palindrome
-        return left >= right;
+        // Step 4: Palindrome confirmed
+        return true;
     }
 };
