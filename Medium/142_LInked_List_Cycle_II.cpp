@@ -5,14 +5,14 @@ Difficulty: Medium
 
 
 Approach:
-1. Use slow and fast pointers to detect if a cycle exists.
-2. If no cycle is found, return nullptr.
-3. If a cycle exists, traverse the list and store visited nodes in a set.
-4. The first node that repeats in the set is the start of the cycle.
+1. Use slow and fast pointers to detect a cycle in the list.
+2. If they meet, a cycle exists.
+3. Move one pointer to head while keeping the other at meeting point.
+4. Move both one step at a time; their meeting point is the start of the cycle.
 
 
 Time Complexity: O(n)
-Space Complexity: O(n)
+Space Complexity: O(1)
 */
 
 /**
@@ -27,40 +27,30 @@ Space Complexity: O(n)
 class Solution {
 public:
     ListNode *detectCycle(ListNode *head) {
-        
-        // Step 1: Handle empty list
-        if(head == nullptr){
-            return nullptr;
-        }
 
-        // Step 2: Detect cycle using slow and fast pointers
-        ListNode* fast = head;
+        // Step 1: Initialize slow and fast pointers
         ListNode* slow = head;
-        int flag = 0;
+        ListNode* fast = head;
 
+        // Step 2: Detect cycle
         while(fast != nullptr && fast->next != nullptr){
-            fast = fast->next->next;
             slow = slow->next;
+            fast = fast->next->next;
 
             if(slow == fast){
-                flag = 1;
-                break;
+
+                // Step 3: Move slow to head
+                slow = head;
+
+                // Step 4: Find start of cycle
+                while(slow != fast){
+                    slow = slow->next;
+                    fast = fast->next;
+                }
+                return slow;
             }
         }
 
-        // Step 3: If no cycle, return nullptr
-        if(flag == 0){
-            return nullptr;
-        }
-
-        // Step 4: Use set to find starting node of cycle
-        unordered_set<ListNode*> s;
-        ListNode* temp = head;
-
-        while(s.find(temp) == s.end()){
-            s.insert(temp);
-            temp = temp->next;
-        }
-        return temp;
+        return nullptr;
     }
 };
