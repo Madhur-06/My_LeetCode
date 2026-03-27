@@ -33,7 +33,6 @@ public:
     ListNode* reverse(ListNode* head) {
         ListNode* prev = NULL;
 
-        // Step 2: Reverse the list
         while (head) {
             ListNode* next = head->next;
             head->next = prev;
@@ -49,7 +48,7 @@ public:
         if(!head || !head->next)
             return true;
 
-        // Step 1: Find middle using slow & fast
+        // Step 2: Find middle using slow & fast
         ListNode* slow = head;
         ListNode* fast = head;
 
@@ -58,10 +57,10 @@ public:
             fast = fast->next->next;
         } 
 
-        // Step 2: Reverse second half
+        // Step 3: Reverse second half
         slow = reverse(slow);
 
-        // Step 3: Compare both halves
+        // Step 4: Compare both halves
         ListNode* first = head;
         ListNode* second = slow;
 
@@ -73,7 +72,6 @@ public:
             second = second->next;
         }
 
-        // Step 4: Palindrome confirmed
         return true;
     }
 };
