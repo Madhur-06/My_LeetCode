@@ -28,32 +28,20 @@ class Solution {
 public:
     bool hasCycle(ListNode *head) {
 
-        // Step 1: Check for empty list
-        if(head == nullptr){
-            return false;
-        }
-
-        // Step 2: Initialize slow and fast pointers
+        // Step 1: Initialize pointers
         ListNode* fast = head;
         ListNode* slow = head;
 
-        // Step 3 & 4: Traverse and detect cycle
-        while(fast->next != nullptr){
+        // Step 2, 3 & 4: Detect cycle
+        while(fast != nullptr && fast->next != nullptr){
+            fast = fast->next->next;
             slow = slow->next;
-            fast = fast->next;
-            
-            if(fast->next != nullptr){
-                fast = fast->next;
-            }
-            else{
-                return false;
-            }
 
             if(fast == slow){
                 return true;
             }
         }
 
-        return false;        
+        return false;
     }
 };
