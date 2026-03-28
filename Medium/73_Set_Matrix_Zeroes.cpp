@@ -5,10 +5,10 @@ Difficulty: Medium
 
 
 Approach:
-1. Check if the first row or first column originally contains any zero.
-2. Use the first row and first column as markers to indicate which rows and columns should become zero.
-3. Traverse the matrix again and set elements to zero based on the markers.
-4. Finally, update the first row and first column if they initially contained zeros.
+1. Check if first row and first column initially contain any zeroes and store in flags.
+2. Use first row and column as markers to indicate which rows and columns should be zeroed.
+3. Traverse matrix again and set elements to zero based on markers.
+4. Finally, update first row and column using the stored flags.
 
 
 Time Complexity: O(m * n)
@@ -19,56 +19,59 @@ class Solution {
 public:
     void setZeroes(vector<vector<int>>& matrix) {
 
-        int m = matrix.size();
-        int n = matrix[0].size();
+        int m=matrix.size();
+        int n=matrix[0].size();
 
-        // Step 1: Check if first row or first column has zero
-        bool firstRowZero = false;
-        bool firstColZero = false;
-        
-        for(int j = 0; j < n; j++) {
-            if(matrix[0][j] == 0) {
-                firstRowZero = true;
+        int zr=0;
+
+        // Step 1: Check if first row has zero
+        for(int i=0;i<n;i++){
+            if(matrix[0][i]==0){
+                zr=1;
                 break;
             }
         }
 
-        for(int i = 0; i < m; i++) {
-            if(matrix[i][0] == 0) {
-                firstColZero = true;
+        int zc=0;
+
+        // Step 1: Check if first column has zero
+        for(int i=0;i<m;i++){
+            if(matrix[i][0]==0){
+                zc=1;
                 break;
             }
         }
 
-        // Step 2: Mark rows and columns using first row and column
-        for(int i = 1; i < m; i++) {
-            for(int j = 1; j < n; j++) {
-                if(matrix[i][j] == 0) {
-                    matrix[i][0] = 0;
-                    matrix[0][j] = 0;
+        // Step 2: Mark rows and columns using first row & column
+        for(int i=1;i<m;i++){
+            for(int j=1;j<n;j++){
+                if(matrix[i][j]==0){
+                    matrix[0][j]=0;
+                    matrix[i][0]=0;
                 }
             }
         }
 
-        // Step 3: Set elements to zero based on markers
-        for(int i = 1; i < m; i++) {
-            for(int j = 1; j < n; j++) {
-                if(matrix[i][0] == 0 || matrix[0][j] == 0) {
-                    matrix[i][j] = 0;
+        // Step 3: Set matrix elements to zero based on markers
+        for(int i=1;i<m;i++){
+            for(int j=1;j<n;j++){
+                if(matrix[i][0]==0||matrix[0][j]==0){
+                    matrix[i][j]=0;
                 }
             }
         }
 
-        // Step 4: Update first row and first column if needed
-        if(firstRowZero) {
-            for(int j = 0; j < n; j++) {
-                matrix[0][j] = 0;
+        // Step 4: Update first row if needed
+        if(zr==1){
+            for(int i=0;i<n;i++){
+                matrix[0][i]=0;
             }
         }
 
-        if(firstColZero) {
-            for(int i = 0; i < m; i++) {
-                matrix[i][0] = 0;
+        // Step 4: Update first column if needed
+        if(zc==1){
+            for(int i=0;i<m;i++){
+                matrix[i][0]=0;
             }
         }
     }
