@@ -5,14 +5,10 @@ Difficulty: Medium
 
 
 Approach:
-1. If array is empty -> return.
-2. Since k can be greater than n, reduce it using:
-   - k = k % n.
-   - If k=0 -> return.
-3. Use Reversal Algorithm:
-   - Reverse entire array.
-   - Reverse first k elements.
-   - Reverse remaining n-k elements.
+1. Handle edge cases and reduce k using modulo to avoid unnecessary rotations.
+2. Reverse the entire array to prepare for correct positioning.
+3. Reverse the first k elements to place them in correct rotated order.
+4. Reverse the remaining elements to complete the rotation.
 
 
 Time Complexity: O(n)
@@ -22,28 +18,21 @@ Space Complexity: O(1)
 class Solution {
 public:
     void rotate(vector<int>& nums, int k) {
-
         int n = nums.size();
-
-        // Step 1: Handle edge case
-        if(n == 0){
-            return;
-        }
-
-        // Step 2: Reduce k
         k = k % n;
 
-        if(k == 0){
+        // Step 1: Handle edge cases and normalize k
+        if(n == 0 || k == 0){
             return;
         }
 
-        // Step 3: Reverse entire array
+        // Step 2: Reverse entire array
         reverse(nums.begin(), nums.end());
 
-        // Step 4: Reverse first k elements
+        // Step 3: Reverse first k elements
         reverse(nums.begin(), nums.begin() + k);
 
-        // Step 5: Reverse remaining elements
+        // Step 4: Reverse remaining elements
         reverse(nums.begin() + k, nums.end());
     }
 };
