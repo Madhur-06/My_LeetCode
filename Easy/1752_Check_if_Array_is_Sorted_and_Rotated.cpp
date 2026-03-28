@@ -3,13 +3,12 @@ Problem: 1752. Check if Array Is Sorted and Rotated
 Link: https://leetcode.com/problems/check-if-array-is-sorted-and-rotated/
 Difficulty: Easy
 
-
 Approach:
-1. Traverse the array and find the position of break point:-
-   where nums[i] > nums[i+1].
-2. If there is no break point -> array is already sorted -> return true.
-3. Ensure last element <= first element
-4. Ensure the remaining portion after the break is sorted
+1. Traverse the array and count the number of break points:-
+   where nums[i] > nums[(i+1)%n].
+2. If break points are more than one -> array is not sorted and rotated -> return false.
+3. Otherwise -> array satisfies the condition -> return true.
+4. Modulo helps to compare last element with first to handle rotation.
 
 
 Time Complexity: O(n)
@@ -20,34 +19,22 @@ class Solution {
 public:
     bool check(vector<int>& nums) {
 
-        int n=nums.size();
+        int n = nums.size();
+        int count = 0;
 
-        // Step 1: Find first decreasing pair
-        int brk=-1;
-        for(int i=0;i<n-1;i++){
-            if(nums[i]>nums[i+1]){
-                brk=i+1;
-                break;
+        // Step 1: Traverse and count break points
+        for (int i = 0; i < n; i++) {
+            if (nums[i] > nums[(i + 1) % n]) {
+                count++;
             }
         }
 
-        // Step 2: If no break point → already sorted
-        if(brk==-1){
-            return true;
-        }
-
-        // Step 3: Last element must not be greater than first
-        if(nums[n-1]>nums[0]){
+        // Step 2: If more than one break point -> invalid
+        if(count > 1){
             return false;
         }
 
-        // Step 4: Ensure remaining part is sorted
-        for(int i=brk;i<n-1;i++){
-            if(nums[i]>nums[i+1]){
-                return false;
-            }
-        }
-
+        // Step 3 & 4: Valid case (including circular check via modulo)
         return true;
     }
 };
