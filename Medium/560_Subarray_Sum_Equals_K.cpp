@@ -5,9 +5,9 @@ Difficulty: Medium
 
 
 Approach:
-1. Use a hashmap to store frequency of prefix sums.
-2. Traverse the array while maintaining cumulative sum.
-3. Check if (sum - k) exists in map to count valid subarrays.
+1. Compute prefix sum array to store cumulative sums.
+2. Traverse prefix array and check if prefix[i] equals k.
+3. Use hashmap to find previous prefix sums equal to (prefix[i] - k).
 4. Update hashmap with current prefix sum frequency.
 
 
@@ -17,27 +17,37 @@ Space Complexity: O(n)
 
 class Solution {
 public:
-    int subarraySum(vector<int>& nums, int k) {
-        unordered_map<int, int> mp;
-       
-       int end = 0;
-       int sum = 0;
-        int count = 0;
-
-        // Step 1: Initialize map with sum 0
-        mp[0] = 1;
-
-        // Step 2 & 3: Traverse and check for valid subarrays
-       for(end; end < nums.size(); end++){
-            sum += nums[end];
-
-            if(mp.find(sum - k) != mp.end()){
-                count += mp[sum - k];
+    int subarraySum(vector<int>& arr, int k) {
+        int n = arr.size(); 
+        
+        int prefix[n]; 
+        
+        // Step 1: Build prefix sum array
+        prefix[0] = arr[0]; 
+        
+        for(int i = 1; i < n; i++)
+        {
+            prefix[i] = arr[i] + prefix[i - 1];
+        }
+        
+        unordered_map<int,int> mp; 
+        
+        int ans = 0; 
+        
+        // Step 2, 3 & 4: Traverse and count subarrays
+        for(int i = 0; i < n; i++) 
+        {
+            if(prefix[i] == k) 
+                ans++;
+            
+            if(mp.find(prefix[i] - k) != mp.end())
+            {
+                ans += mp[prefix[i] - k]; 
             }
-
-            // Step 4: Update prefix sum frequency
-            mp[sum]++;
-       } 
-        return count;
+            
+            mp[prefix[i]]++; 
+        }
+        
+        return ans; 
     }
 };
