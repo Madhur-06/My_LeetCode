@@ -5,30 +5,42 @@ Difficulty: Easy
 
 
 Approach:
-1. Initialize three pointers: prev (null), curr (head), and next.
-2. Traverse the list and reverse the link by pointing current node to prev.
-3. Move prev and curr one step forward each iteration.
-4. At the end, prev will be the new head of the reversed list.
+1. Initialize three pointers: prev, curr, and nxt for traversal.
+2. Traverse the list while updating next pointer of each node.
+3. Reverse the link by pointing current node to previous node.
+4. Move pointers forward and return new head (prev).
 
 
 Time Complexity: O(n)
 Space Complexity: O(1)
 */
 
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+
 class Solution {
 public:
     ListNode* reverseList(ListNode* head) {
 
-        // Step 1: Initialize pointers
-        ListNode* prev = nullptr;
-        ListNode* curr = head;
+        // Step 1:Initialize pointers
+        ListNode *curr=head;
+        ListNode *nxt=head;
+        ListNode *prev=nullptr;
 
-        // Step 2 & 3: Reverse links and move pointers
-        while (curr != nullptr) {
-            ListNode* next = curr->next; 
-            curr->next = prev;           
-            prev = curr;                 
-            curr = next;                 
+        // Step 2 & 3: Traverse and reverse links
+        while(curr!=nullptr){
+            nxt=nxt->next;
+            curr->next=prev;
+            prev=curr;
+            curr=nxt;
         }
 
         // Step 4: Return new head
