@@ -5,14 +5,14 @@ Difficulty: Hard
 
 
 Approach:
-1. Check if there are at least k nodes available to reverse.
-2. Reverse the first k nodes using a helper function.
-3. Recursively process the remaining list in groups of k.
-4. Connect reversed part with the result of next recursion and return new head.
+1. Check if there are at least k nodes available for reversal.
+2. Reverse the first k nodes using helper function.
+3. Recursively process remaining list in groups of k.
+4. Connect reversed part with recursive result and return new head.
 
 
 Time Complexity: O(n)
-Space Complexity: O(n) (due to recursion)
+Space Complexity: O(n) (recursion stack)
 */
 
 /**
@@ -26,17 +26,18 @@ Space Complexity: O(n) (due to recursion)
  * };
  */
 
-ListNode* reverse(ListNode* head,int k){
-    ListNode* prev=NULL;
+ListNode* reverse_list(ListNode* head,int k){
+
+    ListNode* prev=nullptr;
     ListNode* curr=head;
-    ListNode* Next=NULL;
 
     // Step 2: Reverse first k nodes
-    while(curr && k--){
-        Next=curr->next;
+    while(curr!=nullptr&&k>0){
+        ListNode* nxt=curr->next;
         curr->next=prev;
         prev=curr;
-        curr=Next;
+        curr=nxt;
+        k--;
     }
     return prev;
 }
@@ -46,22 +47,21 @@ public:
     ListNode* reverseKGroup(ListNode* head, int k) {
 
         ListNode* temp=head;
-        int count=0;
 
         // Step 1: Check if k nodes exist
-        while(temp && count<k){
-            count++;
+        for (int i=0;i<k;i++){
+            if (temp==nullptr){
+                return head; 
+            }
             temp=temp->next;
         }
 
-        if(count<k) return head;
-
         // Step 2: Reverse first k nodes
-        ListNode* newHead=reverse(head,k);
+        ListNode* newHead=reverse_list(head, k);
 
-        // Step 3 & 4: Recursively process remaining and connect
+        // Step 3 & 4: Recurse for remaining and connect
         head->next=reverseKGroup(temp,k);
-
+        
         return newHead;
     }
 };
