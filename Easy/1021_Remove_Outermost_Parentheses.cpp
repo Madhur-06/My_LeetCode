@@ -7,7 +7,7 @@ Difficulty: Easy
 Approach:
 1. Traverse the string while maintaining a counter for open parentheses.
 2. When '(' appears, add it only if it is not the outermost one.
-3. When ')' appears, decrease the counter and add it only if it is not closing the outermost pair.
+3. When ')' appears, decrease the counter and add it only if it is not closing thse outermost pair.
 4. This removes the outermost parentheses of every primitive substring.
 
 
