@@ -6,9 +6,9 @@ Difficulty: Easy
 
 Approach:
 1. Traverse the string and keep only alphanumeric characters in lowercase.
-2. Initialize two pointers at the beginning and end of cleaned string.
-3. Compare characters from both ends while moving pointers inward.
-4. Return false if mismatch occurs, otherwise return true.
+2. Store the cleaned characters at the beginning of the same string.
+3. Use recursion with two pointers from both ends of the cleaned string.
+4. If characters mismatch return false, otherwise continue until pointers cross.
 
 
 Time Complexity: O(n)
@@ -17,32 +17,38 @@ Space Complexity: O(n)
 
 class Solution {
 public:
+    bool isPalindrome_helper(string &s,int l,int r){
+
+        // Step 3: Use recursion with two pointers from both ends of the cleaned string
+        if(l>r){
+            return true;
+        }
+
+        // Step 4: If characters mismatch return false, otherwise continue until pointers cross
+        if(s[l]!=s[r]){
+            return false;
+        }
+
+        return isPalindrome_helper(s,l+1,r-1);
+    }
+
+
     bool isPalindrome(string s) {
 
-        string clean = "";
+        int n = s.size();
+        
+        int j=0;
 
-        // Step 1: Build cleaned lowercase string
-        for(char c : s){
-            if(isalnum(c)){
-                clean += tolower(c);
+        // Step 1: Traverse the string and keep only alphanumeric characters in lowercase
+        // Step 2: Store the cleaned characters at the beginning of the same string
+        for(int i=0;i<n;i++){
+            if(isalnum(s[i])){
+                s[j] = tolower(s[i]);
+                j++;
             }
         }
+        n=j;
 
-        int start = 0;
-        int end = clean.length() - 1;
-
-        // Step 2 & 3: Compare characters using two pointers
-        while(start <= end){
-
-            if(clean[start] != clean[end]){
-                return false;
-            }
-
-            start++;
-            end--;
-        }
-
-        // Step 4: String is palindrome
-        return true;
+        return isPalindrome_helper(s,0,n-1);
     }
 };
