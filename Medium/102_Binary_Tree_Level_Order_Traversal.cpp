@@ -5,10 +5,10 @@ Difficulty: Medium
 
 
 Approach:
-1. Check if the root node is null and return an empty answer vector.
-2. Use a queue to perform breadth-first traversal level by level.
-3. Process all nodes of the current level and store their values.
-4. Push the left and right children of each node into the queue for the next level.
+1. Check if the root node is null and return an empty vector.
+2. Use a queue to perform breadth-first traversal of the tree.
+3. Process all nodes at the current level and store their values.
+4. Push the left and right child nodes into the queue for the next level traversal.
 
 
 Time Complexity: O(n)
@@ -23,43 +23,45 @@ Space Complexity: O(n)
  *     TreeNode *right;
  *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
  *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left),
- * right(right) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
 class Solution {
 public:
     vector<vector<int>> levelOrder(TreeNode* root) {
+
+        // Step 1: Check if the root node is null and return an empty vector
+        if(root==nullptr){
+            return {};
+        }
+
         vector<vector<int>> ans;
 
-        // Step 1: Check if the root node is null and return an empty answer vector
-        if (!root)
-            return ans;
-
-        // Step 2: Use a queue to perform breadth-first traversal level by level
+        // Step 2: Use a queue to perform breadth-first traversal of the tree
         queue<TreeNode*> q;
         q.push(root);
 
-        while (!q.empty()) {
-            int n = q.size();
-            vector<int> level;
+        while(!q.empty()){
+            int n=q.size();
+            vector<int> sub_ans;
 
-            // Step 3: Process all nodes of the current level and store their values
-            while (n--) {
-                TreeNode* temp = q.front();
+            // Step 3: Process all nodes at the current level and store their values
+            for(int i=0;i<n;i++){
+
+                // Step 4: Push the left and right child nodes into the queue for the next level traversal
+                if((q.front())->left!=nullptr){
+                    q.push((q.front())->left);
+                }
+
+                if((q.front())->right!=nullptr){
+                    q.push((q.front())->right);
+                }
+
+                sub_ans.push_back((q.front())->val);
                 q.pop();
-
-                level.push_back(temp->val);
-
-                // Step 4: Push the left and right children of each node into the queue for the next level
-                if (temp->left)
-                    q.push(temp->left);
-
-                if (temp->right)
-                    q.push(temp->right);
             }
 
-            ans.push_back(level);
+            ans.push_back(sub_ans);
         }
 
         return ans;
