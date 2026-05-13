@@ -3,6 +3,7 @@ Problem: 1752. Check if Array Is Sorted and Rotated
 Link: https://leetcode.com/problems/check-if-array-is-sorted-and-rotated/
 Difficulty: Easy
 
+
 Approach:
 1. Traverse the array and count the number of break points:-
    where nums[i] > nums[(i+1)%n].
