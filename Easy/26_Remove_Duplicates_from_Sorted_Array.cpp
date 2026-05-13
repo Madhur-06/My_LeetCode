@@ -3,6 +3,7 @@ Problem: 26. Remove Duplicates from Sorted Array
 Link: https://leetcode.com/problems/remove-duplicates-from-sorted-array/
 Difficulty: Easy
 
+
 Approach:
 1. If array is empty -> return 0.
 2. Use two pointers:
@@ -12,6 +13,7 @@ Approach:
    - Place it at nums[j+1]
    - Increment j
 4. Return j+1 as the count of unique elements.
+
 
 Time Complexity: O(n)
 Space Complexity: O(1)
