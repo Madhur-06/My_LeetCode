@@ -10,7 +10,7 @@ Approach:
 3. Update the maximum profit if current profit is greater.
 4. Continue updating the minimum price for future profit calculation.
 
-l
+
 Time Complexity: O(n)
 Space Complexity: O(1)
 */
