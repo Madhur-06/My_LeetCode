@@ -5,50 +5,53 @@ Difficulty: Medium
 
 
 Approach:
-1. Use two stacks: one for storing elements and one for tracking minimums.
-2. Push element to main stack and update min stack if needed.
-3. While popping, remove element from min stack if it matches current minimum.
-4. Return top element or minimum using respective stack tops.
+1. Use a stack of pairs to store both value and current minimum.
+2. Push the value along with the minimum value till that point into the stack.
+3. Remove the top element directly from the stack during pop operation.
+4. Return the top value or minimum value using the top pair element.
 
 
-Time Complexity: O(1) for all operations
+Time Complexity: Push -> O(1), Pop -> O(1), Top -> O(1), GetMin -> O(1)
 Space Complexity: O(n)
 */
 
 class MinStack {
-    stack<int> st;
-    stack<int> minSt;
-
 public:
-    MinStack() {}
 
-    // Step 2: Push element and update min stack
+    // Step 1: Use a stack of pairs to store both value and current minimum
+    stack<pair<int,int>> s;
+
+    MinStack() {
+
+    }
+    
     void push(int val) {
-        st.push(val);
-
-        if (minSt.empty() || val <= minSt.top()) {
-            minSt.push(val);
+        
+        // Step 2: Push the value along with the minimum value till that point into the stack
+        if(s.empty()){
+            s.push({val,val});
+        }
+        else{
+            s.push({val,min(val,s.top().second)});
         }
     }
-
-    // Step 3: Pop element and update min stack if needed
+    
     void pop() {
-        int x = st.top();
-        st.pop();
 
-        if (x == minSt.top()) {
-            minSt.pop();
-        }
+        // Step 3: Remove the top element directly from the stack during pop operation
+        s.pop();
     }
-
-    // Step 4: Return top element
+    
     int top() {
-        return st.top();
-    }
 
-    // Step 4: Return minimum element
+        // Step 4: Return the top value or minimum value using the top pair element
+        return s.top().first;
+    }
+    
     int getMin() {
-        return minSt.top();
+
+        // Step 4: Return the top value or minimum value using the top pair element
+        return s.top().second;
     }
 };
 
