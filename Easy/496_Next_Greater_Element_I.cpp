@@ -5,37 +5,48 @@ Difficulty: Easy
 
 
 Approach:
-1. Traverse nums2 from right to left using a monotonic stack.
-2. For each element, remove smaller elements and find next greater.
-3. Store next greater elements in a hashmap for quick lookup.
-4. Build result for nums1 using the precomputed hashmap.
+1. Store each element of nums2 with its index in an unordered_map.
+2. Traverse nums1 and find the index of each element in nums2.
+3. Search towards the right side of nums2 to find the next greater element.
+4. Store the next greater element in the answer vector or keep -1 if not found.
 
 
-Time Complexity: O(n + m)
+Time Complexity: O(m * n)
 Space Complexity: O(n)
 */
 
 class Solution {
 public:
     vector<int> nextGreaterElement(vector<int>& nums1, vector<int>& nums2) {
-        unordered_map<int, int> next;
-        stack<int> s;
 
-        // Step 1 & 2: Build next greater mapping using stack
-        for (int i = nums2.size() - 1; i >= 0; --i) {
-            while (!s.empty() && s.top() <= nums2[i]) {
-                s.pop();
+        int n=nums2.size();
+        int m=nums1.size();
+
+        // Step 1: Store each element of nums2 with its index in an unordered_map
+        unordered_map<int,int> mp;
+
+        for(int i=0;i<n;i++){
+            mp[nums2[i]]=i;
+        }
+
+        vector<int> ans(m,-1);
+
+        // Step 2: Traverse nums1 and find the index of each element in nums2
+        for(int i=0;i<m;i++){
+            
+            int id=mp[nums1[i]];
+
+            // Step 3: Search towards the right side of nums2 to find the next greater element
+            for(int j=id+1;j<n;j++){
+                if(nums2[j]>nums2[id]){
+
+                    // Step 4: Store the next greater element in the answer vector or keep -1 if not found
+                    ans[i]=nums2[j];
+                    break;
+                }
             }
-            next[nums2[i]] = s.empty() ? -1 : s.top();
-            s.push(nums2[i]);
         }
 
-        vector<int> res;
-
-        // Step 3 & 4: Build result using hashmap
-        for (int num : nums1) {
-            res.push_back(next[num]);
-        }
-        return res;
+        return ans;
     }
 };
