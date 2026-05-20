@@ -5,46 +5,59 @@ Difficulty: Easy
 
 
 Approach:
-1. Store each element of nums2 with its index in an unordered_map.
-2. Traverse nums1 and find the index of each element in nums2.
-3. Search towards the right side of nums2 to find the next greater element.
-4. Store the next greater element in the answer vector or keep -1 if not found.
+1. Traverse nums2 from right to left using a monotonic decreasing stack.
+2. Find the next greater element for every element in nums2 and store it.
+3. Store the index of each element of nums2 in an unordered_map.
+4. Use the stored indices and next greater values to build the final answer for nums1.
 
 
-Time Complexity: O(m * n)
-Space Complexity: O(n)
+Time Complexity: O(n + m)
+Space Complexity: O(n + m)
 */
 
 class Solution {
 public:
     vector<int> nextGreaterElement(vector<int>& nums1, vector<int>& nums2) {
 
-        int n=nums2.size();
-        int m=nums1.size();
+        int n=nums1.size();
+        int m=nums2.size();
 
-        // Step 1: Store each element of nums2 with its index in an unordered_map
+        // Step 3: Store the index of each element of nums2 in an unordered_map
         unordered_map<int,int> mp;
 
-        for(int i=0;i<n;i++){
+        // Step 1: Traverse nums2 from right to left using a monotonic decreasing stack
+        stack<int> st;
+
+        vector<int> vec;
+
+        for(int i=m-1;i>=0;i--){
+
             mp[nums2[i]]=i;
+
+            while((!st.empty())&&st.top()<=nums2[i]){
+                st.pop();
+            }
+
+            // Step 2: Find the next greater element for every element in nums2 and store it
+            if(st.empty()){
+                vec.push_back(-1);
+                st.push(nums2[i]);
+                continue;
+            }
+
+            vec.push_back(st.top());
+            st.push(nums2[i]);
+
         }
 
-        vector<int> ans(m,-1);
+        vector<int> ans;
 
-        // Step 2: Traverse nums1 and find the index of each element in nums2
-        for(int i=0;i<m;i++){
+        // Step 4: Use the stored indices and next greater values to build the final answer for nums1
+        for(int i=0;i<n;i++){
             
             int id=mp[nums1[i]];
+            ans.push_back(vec[m-id-1]);
 
-            // Step 3: Search towards the right side of nums2 to find the next greater element
-            for(int j=id+1;j<n;j++){
-                if(nums2[j]>nums2[id]){
-
-                    // Step 4: Store the next greater element in the answer vector or keep -1 if not found
-                    ans[i]=nums2[j];
-                    break;
-                }
-            }
         }
 
         return ans;
