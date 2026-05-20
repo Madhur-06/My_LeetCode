@@ -6,13 +6,13 @@ Difficulty: Easy
 
 Approach:
 1. Traverse nums2 from right to left using a monotonic decreasing stack.
-2. Find the next greater element for every element in nums2 and store it.
-3. Store the index of each element of nums2 in an unordered_map.
-4. Use the stored indices and next greater values to build the final answer for nums1.
+2. Remove all smaller or equal elements from the stack for each current element.
+3. Store the next greater element of every number in an unordered_map.
+4. Build the answer for nums1 using the stored next greater elements.
 
 
 Time Complexity: O(n + m)
-Space Complexity: O(n + m)
+Space Complexity: O(m)
 */
 
 class Solution {
@@ -22,41 +22,36 @@ public:
         int n=nums1.size();
         int m=nums2.size();
 
-        // Step 3: Store the index of each element of nums2 in an unordered_map
+        // Step 3: Store the next greater element of every number in an unordered_map
         unordered_map<int,int> mp;
 
         // Step 1: Traverse nums2 from right to left using a monotonic decreasing stack
         stack<int> st;
 
-        vector<int> vec;
-
         for(int i=m-1;i>=0;i--){
 
-            mp[nums2[i]]=i;
-
+            // Step 2: Remove all smaller or equal elements from the stack for each current element
             while((!st.empty())&&st.top()<=nums2[i]){
                 st.pop();
             }
 
-            // Step 2: Find the next greater element for every element in nums2 and store it
             if(st.empty()){
-                vec.push_back(-1);
+                mp[nums2[i]]=-1;
                 st.push(nums2[i]);
                 continue;
             }
 
-            vec.push_back(st.top());
+            mp[nums2[i]]=st.top();
             st.push(nums2[i]);
 
         }
 
         vector<int> ans;
 
-        // Step 4: Use the stored indices and next greater values to build the final answer for nums1
+        // Step 4: Build the answer for nums1 using the stored next greater elements
         for(int i=0;i<n;i++){
             
-            int id=mp[nums1[i]];
-            ans.push_back(vec[m-id-1]);
+            ans.push_back(mp[nums1[i]]);
 
         }
 
