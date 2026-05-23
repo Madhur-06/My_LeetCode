@@ -5,10 +5,10 @@ Difficulty: Medium
 
 
 Approach:
-1. Use a stack to keep track of asteroids moving safely without collision.
-2. Traverse each asteroid and check collision conditions with the stack top.
-3. Remove smaller asteroids or both asteroids if they are of equal size.
-4. Push surviving asteroids into the stack and build the final result array.
+1. Traverse asteroids from right to left and use a stack to track left-moving asteroids.
+2. Push negative asteroids directly into the stack as they move left.
+3. Resolve collisions for positive asteroids by comparing sizes with stack elements.
+4. Store surviving asteroids and reverse the result to restore original order.
 
 
 Time Complexity: O(n)
@@ -19,42 +19,58 @@ class Solution {
 public:
     vector<int> asteroidCollision(vector<int>& asteroids) {
 
-        // Step 1: Use a stack to keep track of asteroids moving safely without collision
-        stack<int> stack;
-        
-        // Step 2: Traverse each asteroid and check collision conditions with the stack top
-        for (int asteroid : asteroids) {
+        int n=asteroids.size();
 
-            bool alive = true;
+        // Step 1: Traverse asteroids from right to left and use a stack to track left-moving asteroids
+        stack<int> st;
 
-            while (!stack.empty() && asteroid < 0 && stack.top() > 0) {
+        vector<int> ans;
 
-                // Step 3: Remove smaller asteroids or both asteroids if they are of equal size
-                if (stack.top() < -asteroid) {
-                    stack.pop();
-                    continue;
-                } 
-                else if (stack.top() == -asteroid) {
-                    stack.pop();
+        for(int i=n-1;i>=0;i--){
+
+            // Step 2: Push negative asteroids directly into the stack as they move left
+            if(asteroids[i]<0){
+
+                st.push(asteroids[i]);
+
+            }
+            else{
+
+                bool destroyed=false;
+
+                // Step 3: Resolve collisions for positive asteroids by comparing sizes with stack elements
+                while(!st.empty()){
+                    if(abs(st.top())>asteroids[i]){
+                        break;
+                    }
+                    else if(abs(st.top())==asteroids[i]){
+                        st.pop();
+                        destroyed=true;
+                        break;
+                    }
+                    else{
+                        st.pop();
+                    }
                 }
 
-                alive = false;
-                break;
-            }
+                if(st.empty()&&destroyed==false){
+                    ans.push_back(asteroids[i]);
+                }
 
-            // Step 4: Push surviving asteroids into the stack and build the final result array
-            if (alive) {
-                stack.push(asteroid);
             }
         }
-        
-        vector<int> result(stack.size());
 
-        for (int i = stack.size() - 1; i >= 0; --i) {
-            result[i] = stack.top();
-            stack.pop();
+        int sz=ans.size();
+
+        while(!st.empty()){
+            ans.push_back(st.top());
+            st.pop();
         }
         
-        return result;
+        // Step 4: Store surviving asteroids and reverse the result to restore original order
+        reverse(ans.begin()+sz,ans.end());
+        reverse(ans.begin(),ans.end());
+
+        return ans;
     }
 };
