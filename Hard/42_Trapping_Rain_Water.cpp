@@ -5,54 +5,60 @@ Difficulty: Hard
 
 
 Approach:
-1. Initialize two pointers at both ends along with leftMax and rightMax values.
-2. Compare leftMax and rightMax to decide which side to process.
-3. Update the maximum height seen so far from the chosen side.
-4. Add the trapped water at each index using the difference between max height and current height.
+1. Build prefix maximum and suffix maximum arrays for each index.
+2. Store the highest bar on the left side for every position.
+3. Store the highest bar on the right side for every position.
+4. Calculate trapped water at each index using the minimum of left and right maximum heights.
 
 
 Time Complexity: O(n)
-Space Complexity: O(1)
+Space Complexity: O(n)
 */
 
 class Solution {
 public:
     int trap(vector<int>& height) {
 
-        // Step 1: Initialize two pointers at both ends along with leftMax and rightMax values
-        int left = 0;
-        int right = height.size() - 1;
+        int n=height.size();
 
-        int leftMax = height[left];
-        int rightMax = height[right];
+        vector<int> l_max;
+        vector<int> r_max;
 
-        int water = 0;
+        // Step 1: Build prefix maximum and suffix maximum arrays for each index
+        // Step 2: Store the highest bar on the left side for every position
+        l_max.push_back(0);
 
-        while (left < right) {
+        int l_mx=height[0];
 
-            // Step 2: Compare leftMax and rightMax to decide which side to process
-            if (leftMax < rightMax) {
-
-                left++;
-
-                // Step 3: Update the maximum height seen so far from the chosen side
-                leftMax = max(leftMax, height[left]);
-
-                // Step 4: Add the trapped water at each index using the difference between max height and current height
-                water += leftMax - height[left];
-            } 
-            else {
-
-                right--;
-
-                // Step 3: Update the maximum height seen so far from the chosen side
-                rightMax = max(rightMax, height[right]);
-
-                // Step 4: Add the trapped water at each index using the difference between max height and current height
-                water += rightMax - height[right];
-            }
+        for(int i=1;i<n;i++){
+            l_mx=max(l_mx,height[i-1]);
+            l_max.push_back(l_mx);
         }
 
-        return water;        
+        // Step 3: Store the highest bar on the right side for every position
+        r_max.push_back(0);
+
+        int r_mx=height[n-1];
+
+        for(int i=n-2;i>=0;i--){
+            r_mx=max(r_mx,height[i+1]);
+            r_max.push_back(r_mx);
+        }
+
+        reverse(r_max.begin(),r_max.end());
+
+        int ans=0;
+
+        // Step 4: Calculate trapped water at each index using the minimum of left and right maximum heights
+        for(int i=0;i<n;i++){
+
+            if(height[i]>min(l_max[i],r_max[i])){
+                continue;
+            }
+
+            ans=ans+(min(l_max[i],r_max[i])-height[i]);
+        }
+        
+       return ans;
     }
 };
