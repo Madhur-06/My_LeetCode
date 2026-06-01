@@ -5,51 +5,46 @@ Difficulty: Medium
 
 
 Approach:
-1. Traverse the number string and maintain a monotonic increasing result string.
+1. Traverse the number string and maintain a monotonic increasing sequence using index manipulation.
 2. Remove larger previous digits while k is greater than zero to minimize the number.
 3. Remove remaining digits from the end if k is still greater than zero.
 4. Remove leading zeros and return the final smallest number.
 
 
 Time Complexity: O(n)
-Space Complexity: O(n)
+Space Complexity: O(1)
 */
 
 class Solution {
 public:
-    string removeKdigits(string nums, int k) {
+    string removeKdigits(string num, int k) {
 
-        // Step 1: Traverse the number string and maintain a monotonic increasing result string
-        if(nums.size()==k) return "0";
+        // Step 1: Traverse the number string and maintain a monotonic increasing sequence using index manipulation
+        int idx = 0; 
 
-        string ans ="";
-
-        for(int i=0;i<nums.size();i++){
+        for (char c : num) {
 
             // Step 2: Remove larger previous digits while k is greater than zero to minimize the number
-            while(!ans.empty() && k>0 && ans.back()>nums[i]){
-                ans.pop_back();
+            while (k > 0 && idx > 0 && num[idx - 1] > c) {
+                idx--;
                 k--;
             }
 
-            ans+=nums[i];
+            num[idx++] = c;
         }
-    
+
         // Step 3: Remove remaining digits from the end if k is still greater than zero
-        while (k > 0 && !ans.empty()) {
-            ans.pop_back();
-            k--;
-        }
+        idx -= k;
 
         // Step 4: Remove leading zeros and return the final smallest number
         int i = 0;
 
-        while (i < ans.size() && ans[i] == '0') {
+        while (i < idx && num[i] == '0')
             i++;
-        }
 
-        ans = ans.substr(i); 
-        
-        return ans.empty() ? "0" : ans;
+        num.erase(idx);
+        num.erase(0, i);
+
+        return num.empty() ? "0" : num;
     }
 };
