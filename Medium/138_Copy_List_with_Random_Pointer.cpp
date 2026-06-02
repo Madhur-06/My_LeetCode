@@ -5,14 +5,14 @@ Difficulty: Medium
 
 
 Approach:
-1. Create a copy of each node and insert it next to the original node in the list.
-2. Assign random pointers for copied nodes using original node connections.
-3. Separate the interleaved list into original and copied lists.
-4. Return the head of the deep copied list.
+1. Traverse the linked list and create a copy node for every original node.
+2. Store the mapping between original nodes and copied nodes using a hash map.
+3. Traverse the list again to assign next and random pointers for copied nodes.
+4. Return the copied head node from the hash map.
 
 
 Time Complexity: O(n)
-Space Complexity: O(1)
+Space Complexity: O(n)
 */
 
 /*
@@ -22,7 +22,6 @@ public:
     int val;
     Node* next;
     Node* random;
-    
     Node(int _val) {
         val = _val;
         next = NULL;
@@ -35,40 +34,31 @@ class Solution {
 public:
     Node* copyRandomList(Node* head) {
 
-        // Step 1: Create copy nodes and insert them next to originals
-        if (!head) return nullptr;
-        
-        Node* curr = head;
-        while (curr) {
-            Node* new_node = new Node(curr->val);
-            new_node->next = curr->next;
-            curr->next = new_node;
-            curr = new_node->next;
+        // Step 2: Store the mapping between original nodes and copied nodes using a hash map
+        std::unordered_map<Node*, Node*> hashMap;
+
+        // Step 1: Traverse the linked list and create a copy node for every original node
+        Node* cur = head;
+
+        while (cur) {
+            hashMap[cur] = new Node(cur->val);
+            cur = cur->next;
         }
-        
-        // Step 2: Assign random pointers
-        curr = head;
-        while (curr) {
-            if (curr->random) {
-                curr->next->random = curr->random->next;
-            }
-            curr = curr->next->next;
+
+        cur = head;
+
+        // Step 3: Traverse the list again to assign next and random pointers for copied nodes
+        while (cur) {
+
+            Node* copy = hashMap[cur];
+
+            copy->next = hashMap[cur->next];
+            copy->random = hashMap[cur->random];
+
+            cur = cur->next;
         }
-        
-        // Step 3: Separate original and copied list
-        Node* old_head = head;
-        Node* new_head = head->next;
-        Node* curr_old = old_head;
-        Node* curr_new = new_head;
-        
-        while (curr_old) {
-            curr_old->next = curr_old->next->next;
-            curr_new->next = curr_new->next ? curr_new->next->next : nullptr;
-            curr_old = curr_old->next;
-            curr_new = curr_new->next;
-        }
-        
-        // Step 4: Return copied list head
-        return new_head;       
+
+        // Step 4: Return the copied head node from the hash map
+        return hashMap[head];        
     }
 };
