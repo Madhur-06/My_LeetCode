@@ -5,46 +5,67 @@ Difficulty: Medium
 
 
 Approach:
-1. Traverse the number string and maintain a monotonic increasing sequence using index manipulation.
-2. Remove larger previous digits while k is greater than zero to minimize the number.
-3. Remove remaining digits from the end if k is still greater than zero.
-4. Remove leading zeros and return the final smallest number.
+1. Use a monotonic increasing stack to build the smallest possible number.
+2. Remove larger previous digits while k is greater than zero.
+3. Remove any remaining digits from the end if k is still left.
+4. Construct the result, remove leading zeros, and return the final number.
 
 
 Time Complexity: O(n)
-Space Complexity: O(1)
+Space Complexity: O(n)
 */
 
 class Solution {
 public:
     string removeKdigits(string num, int k) {
 
-        // Step 1: Traverse the number string and maintain a monotonic increasing sequence using index manipulation
-        int idx = 0; 
+        int n=num.size();
 
-        for (char c : num) {
+        if(k==n){
+            return "0";
+        }
 
-            // Step 2: Remove larger previous digits while k is greater than zero to minimize the number
-            while (k > 0 && idx > 0 && num[idx - 1] > c) {
-                idx--;
+        // Step 1: Use a monotonic increasing stack to build the smallest possible number
+        stack<char> st;
+        string ans;
+
+        for(int i=0;i<n;i++){
+
+            // Step 2: Remove larger previous digits while k is greater than zero
+            while(!st.empty() && k>0 && num[i]<st.top()){
+                st.pop();
                 k--;
             }
 
-            num[idx++] = c;
+            st.push(num[i]);
         }
 
-        // Step 3: Remove remaining digits from the end if k is still greater than zero
-        idx -= k;
+        // Step 3: Remove any remaining digits from the end if k is still left
+        while(k>0){
+            st.pop();
+            k--;
+        }
 
-        // Step 4: Remove leading zeros and return the final smallest number
+        // Step 4: Construct the result, remove leading zeros, and return the final number
+        while(!st.empty()){
+            ans.push_back(st.top());
+            st.pop();
+        }
+
+        reverse(ans.begin(),ans.end());
+
         int i = 0;
 
-        while (i < idx && num[i] == '0')
+        while(i<ans.size() && ans[i]=='0'){
             i++;
+        }
 
-        num.erase(idx);
-        num.erase(0, i);
+        ans=ans.substr(i);
 
-        return num.empty() ? "0" : num;
+        if(ans.empty()){
+            return "0";
+        }
+
+        return ans;
     }
 };
