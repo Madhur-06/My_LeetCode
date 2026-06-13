@@ -5,10 +5,10 @@ Difficulty: Medium
 
 
 Approach:
-1. Find the previous less element index for every element using a monotonic stack.
-2. Find the next less element index for every element using a monotonic stack.
-3. Calculate the number of subarrays where each element acts as the minimum.
-4. Add the contribution of each element to the total sum using modular arithmetic.
+1. Find the distance to the next less element for every index using a monotonic stack.
+2. Find the distance to the previous less element for every index using a monotonic stack.
+3. Calculate the number of subarrays where each element is the minimum using both distances.
+4. Add the contribution of each element to the answer using modular arithmetic.
 
 
 Time Complexity: O(n)
@@ -17,69 +17,67 @@ Space Complexity: O(n)
 
 class Solution {
 public:
-    int sumSubarrayMins(vector<int>& arr) {
-        
-        int n = arr.size();
-        int mod = 1e9 + 7;
+    int sumSubarrayMins(vector<int>& nums) {
 
-        vector<int> ple(n); 
-        vector<int> nle(n); 
+        int n=nums.size();
 
-        // Step 1: Find the previous less element index for every element using a monotonic stack
-        stack<int> st;
+        vector<int> nle;
+        vector<int> ple;
 
-        for (int i = 0; i < n; i++) {
+        // Step 1: Find the distance to the next less element for every index using a monotonic stack
+        nle.push_back(1);
 
-            while (!st.empty() && arr[st.top()] > arr[i]) {
-                st.pop();
+        stack<int> nle_st;
+        nle_st.push(n-1);
+
+        for(int i=n-2;i>=0;i--){
+            
+            while(!nle_st.empty() && nums[i]<=nums[nle_st.top()]){
+                nle_st.pop();
+            }
+            
+            if(nle_st.empty()){
+                nle.push_back(n-i);
+                nle_st.push(i);
+                continue;
             }
 
-            if (st.empty()) {
-                ple[i] = -1;
-            } 
-            else {
-                ple[i] = st.top();
+            nle.push_back(nle_st.top()-i);
+            nle_st.push(i);
+        }
+
+        reverse(nle.begin(),nle.end());
+
+        // Step 2: Find the distance to the previous less element for every index using a monotonic stack
+        ple.push_back(1);
+
+        stack<int> ple_st;
+        ple_st.push(0);
+
+        for(int i=1;i<n;i++){
+            
+            while(!ple_st.empty() && nums[i]<nums[ple_st.top()]){
+                ple_st.pop();
+            }
+            
+            if(ple_st.empty()){
+                ple.push_back(i+1);
+                ple_st.push(i);
+                continue;
             }
 
-            st.push(i);
+            ple.push_back(i-ple_st.top());
+            ple_st.push(i);
         }
 
-        while (!st.empty()) {
-            st.pop();
-        }
-        
-        // Step 2: Find the next less element index for every element using a monotonic stack
-        for (int i = n - 1; i >= 0; i--) {
+        long long ans=0;
 
-            while (!st.empty() && arr[st.top()] >= arr[i]) {
-                st.pop();
-            }
-
-            if (st.empty()) {
-                nle[i] = n;
-            } 
-            else {
-                nle[i] = st.top();
-            }
-
-            st.push(i);
+        // Step 3: Calculate the number of subarrays where each element is the minimum using both distances
+        // Step 4: Add the contribution of each element to the answer using modular arithmetic
+        for(int i=0;i<n;i++){
+            ans=(ans+((long long)nums[i]*nle[i]*ple[i]))%(1000000007);
         }
 
-        long long totalSum = 0;
-
-        // Step 3: Calculate the number of subarrays where each element acts as the minimum
-        // Step 4: Add the contribution of each element to the total sum using modular arithmetic
-        for (int i = 0; i < n; i++) {
-
-            long long leftCount = i - ple[i];
-            long long rightCount = nle[i] - i;
-
-            long long contribution =
-                (1LL * arr[i] * leftCount * rightCount) % mod;
-
-            totalSum = (totalSum + contribution) % mod;
-        }
-
-        return totalSum;
+        return int(ans);
     }
 };
