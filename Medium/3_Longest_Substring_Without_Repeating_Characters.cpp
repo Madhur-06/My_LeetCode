@@ -5,39 +5,47 @@ Difficulty: Medium
 
 
 Approach:
-1. Use sliding window with two pointers (left and right).
-2. Expand window by adding characters if not present in set.
-3. If duplicate found, shrink window from left until duplicate is removed.
-4. Track and update maximum length of valid substring.
+1. Use a sliding window with two pointers to track the current substring.
+2. Store the last occurrence index of each character using a hash map.
+3. Move the left pointer when a repeating character is found within the current window.
+4. Update the maximum substring length after processing each character.
 
 
 Time Complexity: O(n)
-Space Complexity: O(n)
+Space Complexity: O(min(n, charset))
 */
 
 class Solution {
 public:
     int lengthOfLongestSubstring(string s) {
+
         int n = s.length();
+
         int maxLength = 0;
-        unordered_set<char> charSet;
+
+        // Step 2: Store the last occurrence index of each character using a hash map
+        unordered_map<char, int> charMap;
+
+        // Step 1: Use a sliding window with two pointers to track the current substring
         int left = 0;
         
-        // Step 1, 2 & 3: Sliding window traversal
         for (int right = 0; right < n; right++) {
-            if (charSet.count(s[right]) == 0) {
-                charSet.insert(s[right]);
-                maxLength = max(maxLength, right - left + 1);
-            } else {
-                while (charSet.count(s[right])) {
-                    charSet.erase(s[left]);
-                    left++;
-                }
-                charSet.insert(s[right]);
+
+            // Step 3: Move the left pointer when a repeating character is found within the current window
+            if (charMap.count(s[right]) == 0 || charMap[s[right]] < left) {
+
+                charMap[s[right]] = right;
+            } 
+            else {
+
+                left = charMap[s[right]] + 1;
+                charMap[s[right]] = right;
             }
+
+            // Step 4: Update the maximum substring length after processing each character
+            maxLength = max(maxLength, right - left + 1);
         }
         
-        // Step 4: Return maximum length
         return maxLength;
     }
 };
