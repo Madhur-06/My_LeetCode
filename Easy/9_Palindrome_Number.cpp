@@ -37,7 +37,6 @@ public:
         if(rx == x){
             return true;
         }
-
         return false;
     }
 };
